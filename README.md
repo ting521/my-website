@@ -1,41 +1,14 @@
-# Website
+# 📚 我們的專案文件中心
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+這是一個使用 [Docusaurus](https://docusaurus.io/) 架設的現代化靜態文件網站，專門用來管理與展示我們的專案資訊、設計規範與操作手冊。
 
-## Installation
+## 🚀 如何在本地端（自己的電腦）預覽？
 
-```bash
-yarn
-```
+如果你想要修改內容，並在自己的電腦上即時預覽畫面的變化，請按照以下步驟：
 
-## Local Development
-
-```bash
-yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
+1. 透過 VS Code 開啟本專案資料夾。
+2. 打開終端機 (Terminal)。
+3. 輸入以下指令啟動本地伺服器：
 
 ```bash
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-Using SSH:
-
-```bash
-USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+npm run start
