@@ -337,7 +337,7 @@ const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const IS_MOBILE = matchMedia('(pointer:coarse)').matches || Math.min(screen.width,screen.height) < 820;
 
 /* ---------- 手感參數 ---------- */
-const DEF = { base:19, range:9, curve:2.6, react:0.35, reach:2.2, err:1.0, wind:0.3 };
+const DEF = { base:19, range:11, curve:2.6, react:0.66, reach:2.2, err:1.0, wind:0.3 };   // 2026-11-18 King 在手機上實測後定的預設值
 const TUNE = { ...DEF };
 try { Object.assign(TUNE, JSON.parse(localStorage.getItem('pk_tune') || '{}')); } catch(_) {}
 const SLIDERS = [
