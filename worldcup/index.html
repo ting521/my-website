@@ -56,6 +56,29 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--amber);outline-
   width:78px;height:78px;padding:0;border:0;border-radius:50%;background:none;pointer-events:auto;display:grid;place-items:center;
   -webkit-tap-highlight-color:transparent;transition:transform .15s}
 #ultBtn:active{transform:scale(.93)}
+#ultBtn .arc2{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-dasharray:213.6;stroke-dashoffset:213.6;transition:stroke-dashoffset .5s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 4px #9fd8ff)}
+#ultBtn.max .core{background:radial-gradient(circle at 50% 30%,#ffffff,#bfe6ff 40%,#5a8cff 85%)!important;box-shadow:0 0 30px rgba(150,210,255,.95),0 0 60px rgba(90,140,255,.6)}
+#ultBtn.max .txt{color:#0b1b4a!important}#ultBtn.max .ico{color:#fff!important}
+/* 大絕招選單：集滿後點按鈕，從四招裡挑一招 */
+#ultMenu{position:fixed;z-index:8;right:max(12px,env(safe-area-inset-right,0px));left:max(12px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 214px);display:grid;gap:8px;justify-items:end;pointer-events:none}
+#ultMenu .um{pointer-events:auto;width:min(300px,100%);display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;text-align:left;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(8,14,32,.9);color:var(--chalk);font-family:var(--body);cursor:pointer;animation:chipIn .26s cubic-bezier(.2,1.5,.4,1) both}
+#ultMenu .um i{width:34px;height:34px;border-radius:50%;background:var(--c);box-shadow:0 0 14px var(--c)}
+#ultMenu .um b{display:block;font-size:15px;font-weight:900}#ultMenu .um small{display:block;font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+#ultMenu .um em{font:700 11px var(--mono);font-style:normal;color:var(--amber)}
+#ultMenu .um:disabled{opacity:.45;cursor:default}
+#ultMenu .um.top{border-color:rgba(160,215,255,.8);background:linear-gradient(120deg,rgba(20,40,110,.95),rgba(8,14,32,.95))}
+#ultMenu .um.top:not(:disabled){box-shadow:0 0 26px rgba(120,180,255,.55)}
+body.meteor #hud,body.meteor #bottom{filter:brightness(1.3)}
+#dim{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(circle at 50% 55%,rgba(10,20,60,0) 0%,rgba(4,8,30,.72) 70%)}
+body.meteor #dim{opacity:1}
+/* 終極大招的招式名橫幅：斜切色帶從左掃進來，停一拍再掃出去 */
+#cutin{position:fixed;left:-10vw;right:-10vw;top:34%;height:clamp(110px,22vh,170px);z-index:6;pointer-events:none;display:grid;place-items:center;transform:skewY(-7deg) translateX(-120%);
+  background:linear-gradient(90deg,rgba(10,20,70,0),rgba(20,50,160,.96) 14%,#eaf6ff 50%,rgba(20,50,160,.96) 86%,rgba(10,20,70,0));box-shadow:0 0 60px rgba(120,180,255,.8);opacity:0}
+#cutin b{display:block;font-family:var(--body);font-weight:900;font-size:clamp(46px,15vw,92px);letter-spacing:.14em;color:#0b1650;text-shadow:0 0 18px #fff,0 2px 0 #fff;line-height:1}
+#cutin small{display:block;text-align:center;font-family:var(--body);font-weight:900;font-size:13px;letter-spacing:.5em;color:#1b2f8f;margin-bottom:4px}
+#cutin.on{animation:cutin 1.15s cubic-bezier(.2,.9,.2,1) both}
+@keyframes cutin{0%{transform:skewY(-7deg) translateX(-120%);opacity:0}16%{transform:skewY(-7deg) translateX(0);opacity:1}74%{transform:skewY(-7deg) translateX(3%);opacity:1}100%{transform:skewY(-7deg) translateX(120%);opacity:0}}
+@media (prefers-reduced-motion:reduce){#cutin.on{animation-duration:.6s}}
 #ultBtn > svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
 #ultBtn .trk{fill:none;stroke:rgba(244,241,230,.14);stroke-width:5}
 #ultBtn .arc{fill:none;stroke:url(#ultGrad);stroke-width:5;stroke-linecap:round;stroke-dasharray:213.6;stroke-dashoffset:213.6;transition:stroke-dashoffset .5s cubic-bezier(.2,.8,.2,1)}
@@ -115,9 +138,9 @@ body.decider #shotLbl{color:#ffd21f}
 #tallyTotal.fly{opacity:0;transform:translate(var(--fx),var(--fy)) scale(.28);transition:transform .4s cubic-bezier(.6,0,.9,.5),opacity .4s ease-in}
 @keyframes totalIn{0%{transform:scale(.3);opacity:0}100%{transform:none;opacity:1}}
 @keyframes totalSlam{0%{transform:scale(1)}35%{transform:scale(1.42) rotate(-3deg);color:#fff}100%{transform:scale(1.12)}}
-#boom{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 42%,rgba(255,236,170,.95) 0%,rgba(255,178,63,.55) 28%,rgba(255,120,40,0) 62%)}
+#boom{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;background:radial-gradient(circle closest-side at 50% 50%,rgba(255,236,170,.95) 0%,rgba(255,178,63,.55) 45%,rgba(255,120,40,0) 100%)}
 #boom.on{animation:boom .55s ease-out}
-@keyframes boom{0%{opacity:.95;transform:scale(.6)}100%{opacity:0;transform:scale(1.7)}}
+@keyframes boom{0%{opacity:.95;transform:scale(.9)}100%{opacity:0;transform:scale(2.8)}}
 #score.roll{color:#ffd21f;text-shadow:0 0 16px rgba(255,190,60,.9);transform:scale(1.25);transform-origin:left center}
 @media (prefers-reduced-motion:reduce){.chip,#tallyTotal.on,#tallyTotal.slam,#boom.on{animation-duration:.01s}}
 .pop{grid-area:1/1;font-family:var(--display);font-size:clamp(48px,16vw,96px);letter-spacing:.02em;color:var(--chalk);
@@ -238,10 +261,13 @@ input[type=text],input[type=number]{user-select:text;-webkit-user-select:text}
 <div id="flash"></div>
 <button id="ultBtn" class="ui" type="button" aria-label="大絕招" hidden>
   <svg viewBox="0 0 80 80" aria-hidden="true"><defs><linearGradient id="ultGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe066"/><stop offset=".55" stop-color="#ff9a3d"/><stop offset="1" stop-color="#ff4d2e"/></linearGradient></defs>
-    <circle class="trk" cx="40" cy="40" r="34"/><circle class="arc" id="ultArc" cx="40" cy="40" r="34"/></svg>
+    <circle class="trk" cx="40" cy="40" r="34"/><circle class="arc" id="ultArc" cx="40" cy="40" r="34"/><circle class="arc2" id="ultArc2" cx="40" cy="40" r="34"/></svg>
   <span class="core"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.6 2.2c.4 3-1.3 4.6-2.9 6.3C8 10.3 6.4 12 6.4 14.9A5.6 5.6 0 0 0 12 20.5a5.6 5.6 0 0 0 5.6-5.6c0-2.2-1-3.8-2-5 .1 1.6-.5 2.8-1.6 3.4.4-3.3-.4-7.4-1.4-11.1Zm-.7 11.3c.2 1.4 1.8 2 1.8 3.6a1.8 1.8 0 0 1-3.6 0c0-1.5 1.2-2.4 1.8-3.6Z"/></svg><span class="txt" id="ultTxt">0%</span></span>
   <span class="lbl" id="ultLbl">大絕招</span>
 </button>
+<div id="ultMenu" hidden></div>
+<div id="dim"></div>
+<div id="cutin"><div><small>終極大招</small><b>流星天降</b></div></div>
 <div id="replay" hidden><div class="bar t"></div><div class="bar b"></div><div id="grain"></div>
   <div class="tag"><i></i>REPLAY <span id="camLbl"></span></div><div class="skip">點一下跳過</div></div>
 
@@ -309,7 +335,7 @@ input[type=text],input[type=number]{user-select:text;-webkit-user-select:text}
     <p class="stars" id="rcStars" aria-label=""></p>
     <p id="rcGoals"></p>
     <p class="next" id="rcNext"></p>
-    <div class="btns"><button class="btn" id="rcGo" type="button">進入下一輪</button></div>
+    <div class="btns"><button class="btn" id="rcGo" type="button">進入下一輪</button><button class="btn sec" id="rcQuit" type="button" hidden>直接結算</button></div>
   </div>
 </div>
 <div id="end" class="ui" hidden>
@@ -690,7 +716,7 @@ const KITS = [
   ['ar','阿根廷','#75b8e8','#ffffff','#111a3a','#111a3a','vstripes'],
   ['de','德國','#f5f5f2','#111111','#111111','#111111','band'],
   ['fr','法國','#1b2a5c','#ffffff','#ffffff','#ffffff','solid'],
-  ['en','英格蘭','#f5f5f2','#1b2a5c','#1b2a5c','#1b2a5c','solid'],
+  ['en','英格蘭','#f5f5f2','#1b2a5c','#d0102a','#1b2a5c','solid'],
   ['es','西班牙','#c8102e','#f6c400','#f6c400','#1b2a5c','yoke'],
   ['pt','葡萄牙','#7a1023','#0b6b3a','#f6c400','#7a1023','halves'],
   ['nl','荷蘭','#ff7a00','#111111','#111111','#ff7a00','solid'],
@@ -1013,12 +1039,12 @@ async function loadReal(){
       let sk=null; inner.traverse(o=>{ if(o.isSkinnedMesh&&!sk) sk=o.skeleton; });
       const O=bp('Hips'), U=bp('Head').sub(O).normalize(), S=bp('LeftArm').sub(bp('RightArm')).normalize(), hh=n=>bp(n).sub(O).dot(U);
       const F=bp('LeftToeBase').sub(bp('LeftFoot')); F.addScaledVector(U,-F.dot(U)).normalize();
-      const KU=REAL.kitU={ kOn:{value:0}, kPat:{value:0}, cJ2:{value:new THREE.Color()}, cJ3:{value:new THREE.Color()}, kTrim:{value:0}, cTrim:{value:new THREE.Color('#d8b25c')}, kF:{value:F}, kO:{value:O}, kU:{value:U}, kS:{value:S}, kNeck:{value:hh('neck')}, kKnee:{value:hh('LeftLeg')}, kAnk:{value:hh('LeftFoot')},
+      const KU=REAL.kitU={ kOn:{value:0}, kPat:{value:0}, cJ2:{value:new THREE.Color()}, cJ3:{value:new THREE.Color()}, kTrim:{value:0}, kHand:{value:Math.abs(bp('LeftHand').sub(O).dot(S))}, cTrim:{value:new THREE.Color('#d8b25c')}, kF:{value:F}, kO:{value:O}, kU:{value:U}, kS:{value:S}, kNeck:{value:hh('neck')}, kKnee:{value:hh('LeftLeg')}, kAnk:{value:hh('LeftFoot')},
         kArm:{value:Math.abs(bp('LeftArm').sub(O).dot(S))*1.12}, cJ:{value:new THREE.Color()}, cSl:{value:new THREE.Color()}, cSh:{value:new THREE.Color()}, cSo:{value:new THREE.Color()}, cInk:{value:new THREE.Color()} };
       inner.traverse(o=>{ if(!o.isSkinnedMesh) return; const m=o.material; m.onBeforeCompile=sh=>{ Object.assign(sh.uniforms,KU);
         sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vBind;').replace('#include <begin_vertex>','#include <begin_vertex>\nvBind=(bindMatrix*vec4(position,1.)).xyz;');
         sh.fragmentShader=sh.fragmentShader.replace('#include <common>',`#include <common>
-          varying vec3 vBind; uniform float kOn,kPat,kNeck,kKnee,kAnk,kArm,kTrim; uniform vec3 kO,kU,kS,kF,cJ,cJ2,cJ3,cSl,cSh,cSo,cInk,cTrim;`).replace('#include <map_fragment>',`#include <map_fragment>
+          varying vec3 vBind; uniform float kOn,kPat,kNeck,kKnee,kAnk,kArm,kTrim,kHand; uniform vec3 kO,kU,kS,kF,cJ,cJ2,cJ3,cSl,cSh,cSo,cInk,cTrim;`).replace('#include <map_fragment>',`#include <map_fragment>
           if(kOn>.5){ vec3 c=diffuseColor.rgb; float mx=max(c.r,max(c.g,c.b)), mn=min(c.r,min(c.g,c.b)), sat=(mx-mn)/max(mx,.001);
             float white=smoothstep(.16,.4,mx)*(1.-smoothstep(.2,.34,sat));
             vec3 d=vBind-kO; float h=dot(d,kU), lat=abs(dot(d,kS)); float jb=-.2*kNeck, hem=kKnee*.9;
@@ -1031,7 +1057,9 @@ async function loadReal(){
             vec3 c2=cJ2;
             // 4：漸層直條（阿根廷）：正中央是白條，藍條由深到淺暈開，袖子維持白色
             // 5：上胸一道橫帶（德國）
-            if(kPat>4.5){ alt = (h>kNeck*.93 && h<kNeck*1.06 && lat<kArm) ? 1. : 0.; }
+            // 6：身側兩道色塊（英格蘭）：腋下到下襬的側邊
+            if(kPat>5.5){ alt = (lat>kArm*.72 && lat<=kArm && h<kNeck*.8) ? smoothstep(kArm*.72,kArm*.77,lat) : 0.; }
+            else if(kPat>4.5){ alt = (h>kNeck*.93 && h<kNeck*1.06 && lat<kArm) ? 1. : 0.; }
             else if(kPat>3.5){ float w=cell*.62, q=sl/w+.5; alt=mod(floor(q),2.); float f=fract(q); c2=mix(cJ3,cJ2,smoothstep(0.,1.,sl>0.?f:1.-f)); if(lat>kArm) alt=0.; }
             if(h>jb && h<kNeck*1.12){ tint = mix(lat>kArm ? cSl : cJ, c2, alt); navy=step(c.r*1.5,c.b)*(1.-smoothstep(.12,.3,mx))*step(lat,kArm); }
             else if(h>hem && h<=jb){ tint=cSh; navy=step(c.r*1.5,c.b)*(1.-smoothstep(.12,.3,mx)); }
@@ -1040,8 +1068,8 @@ async function loadReal(){
             float gG=0., gN=0.;
             if(kTrim>.5){ float trimC=max(step(c.r*1.5,c.b)*(1.-smoothstep(.12,.3,mx)), step(c.b*1.6,c.r)*step(c.g,c.r*.5)*step(.25,mx));
               if(h>jb && h<kNeck*1.12){
-                if(lat>kArm){ gN=trimC; }
-                else { float cw=cell*.5, ln=min(abs(fract((sl+h)/cw)-.5),abs(fract((sl-h)/cw)-.5)); tint*=1.-.16*(1.-smoothstep(.03,.09,ln));
+                if(lat>kArm){ gN=trimC*step(lat,kHand*.93); }
+                else { float cw=cell*.5, ln=min(abs(fract((sl+h)/cw)-.5),abs(fract((sl-h)/cw)-.5)); if(kTrim<1.5) tint*=1.-.16*(1.-smoothstep(.03,.09,ln));
                   float v=h-(kNeck*.86+abs(sl)*1.3); if(dot(d,kF)>0. && abs(sl)<kArm*.5){ gG=1.-smoothstep(.011,.011+.006,abs(v)); if(v>.011) { navy=0.; } }
                   if(h>kNeck*.9){ gN=navy; navy=0.; } } }
               else if(h>hem && h<=jb){ gG=1.-smoothstep(.02,.026,h-hem); }
@@ -1053,7 +1081,7 @@ async function loadReal(){
   REAL.loading=false;
 }
 // 真人選手球衣：台灣＝原本的白色球衣；其他國家用該國配色（主色球衣、球褲色、主色球襪、字色背號）；上傳球衣則取照片平均色
-function applyRealKit(){ const U=REAL.kitU; if(!U) return; const k=kitById(KIT.id); U.kTrim.value = (KIT.mode!=='upload' && k.id==='ibu') ? 1 : 0;
+function applyRealKit(){ const U=REAL.kitU; if(!U) return; const k=kitById(KIT.id); U.kTrim.value = KIT.mode==='upload' ? 0 : k.id==='ibu' ? 1 : k.id==='en' ? 2 : 0; U.cTrim.value.set(k.id==='en' ? '#1b2a5c' : '#d8b25c');   // 1 金邊＋菱格暗紋（武大）；2 只有領口袖口滾邊（英格蘭，深藍）
   if(KIT.mode==='upload' && kitImgEl){ const dark=lum(KIT.imgColor)<.5; U.kOn.value=1; U.kPat.value=0; U.cJ.value.set(KIT.imgColor); U.cSl.value.set(KIT.imgColor); U.cSh.value.set(dark?'#f4f1e6':'#1b1f2a'); U.cSo.value.set(KIT.imgColor); U.cInk.value.set(dark?'#ffffff':'#111111'); return; }
   if(k.id==='tw'){ U.kOn.value=0; return; }
   const pat={checker:1,vstripes:2,hoops:3}[k.pat]||0; U.kPat.value=pat; U.kOn.value=1;
@@ -1062,7 +1090,7 @@ function applyRealKit(){ const U=REAL.kitU; if(!U) return; const k=kitById(KIT.i
   U.cInk.value.set(Math.abs(lum(k.t)-lum(k.p))<.25 && !pat ? (lum(k.p)>.5?'#111111':'#ffffff') : k.t);
   if(k.id==='hr') U.cInk.value.set('#1d3fb0');
   // 各國真人球衣（參考實體主場球衣的配色：球衣／球褲／球襪／背號），不放隊徽與品牌標誌
-  const RK={ fr:['#1f3fbf','#ffffff','#c8102e','#ffffff'], br:['#ffd21f','#1f47d6','#ffffff','#0b8a3e'], en:['#ffffff','#1b2a5c','#ffffff','#1b2a5c'],
+  const RK={ fr:['#1f3fbf','#ffffff','#c8102e','#ffffff'], br:['#ffd21f','#1f47d6','#ffffff','#0b8a3e'], en:['#ffffff','#1b2a5c','#ffffff','#d0102a',6,'#d0102a'],
     de:['#ffffff','#111111','#ffffff','#111111',5,'#111111'], jp:['#1b2f8f','#1b2f8f','#1b2f8f','#ffffff'], es:['#c8102e','#1b2a5c','#1b2a5c','#f6c400'],
     kr:['#d81f2a','#111111','#d81f2a','#ffffff'], pt:['#b3121f','#0b6b3a','#b3121f','#f6c400'], nl:['#ff7a00','#ff7a00','#ff7a00','#111111'],
     it:['#1f5fbf','#ffffff','#1f5fbf','#ffffff'], mx:['#0b6b3a','#ffffff','#c8102e','#ffffff'], ma:['#c8102e','#0b6b3a','#c8102e','#ffffff'], ibu:['#2743c4','#2743c4','#2743c4','#ffffff'] }[k.id];
@@ -1192,7 +1220,7 @@ function setAvatar(a){ KIT.avatar=a; saveKit(); syncAvatarUI(); if(a==='real') l
 /* 人牆（冠軍戰）：三名防守球員站在球和球門之間，擋住一側。球要嘛用弧線繞過、要嘛挑高越過 */
 const WALL = { on:false, x:0, z:-7.2, hw:0.98, h:1.82, figs:[], t:9 };
 for(let i=0;i<3;i++){ const f=makeFigure(0xe8e4d8,0x20242f,0xe2b08a); f.visible=false; scene.add(f); WALL.figs.push(f); }
-function setWall(on){ WALL.on=on; WALL.t=9; if(on) WALL.x=(Math.random()<.5?-1:1)*rnd(0.75,1.5);
+function setWall(on){ WALL.on=on; WALL.t=9; WALL.blown=false; if(on) WALL.x=(Math.random()<.5?-1:1)*rnd(0.75,1.5);
   WALL.figs.forEach((f,i)=>{ f.visible=on; f.position.set(WALL.x+(i-1)*0.64,0,WALL.z); f.rotation.set(0,0,0); f.userData.arms.forEach((a,j)=>a.rotation.z=(j?1:-1)*-0.12); }); }
 const HERO_HOME = new THREE.Vector3(-0.55,0,1.35), HERO_KICK = new THREE.Vector3(-0.3,0,0.38);
 const keeper = makeFigure(0x37c6d0, 0x0b1530, 0xf4f1e6); scene.add(keeper);
@@ -1424,8 +1452,20 @@ const ROUND = 3, ROUNDS = 3;   // 每輪踢 3 球，踢完直接進下一輪，�
 const DIFF = [ { react:1, reach:0, err:1, wind:1, stage:'小組賽', name:'門將反應慢・微風', move:0, wall:false },
                { react:.82, reach:.3, err:.8, wind:1.5, stage:'淘汰賽', name:'門將更快・風變大・黃金靶會移動', move:1, wall:false },
                { react:.68, reach:.6, err:.6, wind:2, stage:'冠軍戰', name:'最強門將・強風・人牆擋路', move:2, wall:true } ];
+const PASS = 1;   // 每關至少進幾球才能晉級下一關
 const starStr = n => '★'.repeat(n)+'<i>'+'★'.repeat(ROUND-n)+'</i>';
 const dif = () => DIFF[Math.min((G.round||1)-1, DIFF.length-1)];
+/* 大絕招四式。開場先送 100%（第一招免費）。前三招各花 100% 集氣；終極大招要存到 150% 才能放，放了一定進
+   fire 烈焰重砲：球速大增，撞開人牆，門將碰到也擋不住（但還是要自己瞄準在門框內）
+   ghost 幻影分身：放出兩顆假球，門將一定撲向另一邊
+   seek 金靶追蹤：球自動轉彎追上黃金靶（會動的也追得到），穩拿靶心加分
+   meteor 流星天降：門將嚇到動不了、人牆被震開、球自動飛進上角，沒人防得住 */
+const ULT = {
+  fire:  { id:'fire',  name:'烈焰重砲', tip:'球速大增，撞開人牆，門將碰到也擋不住', cost:100, pts:300, mul:1.5, c:'#ff5a2e', cols:[0xff4d2e,0xffb23f] },
+  ghost: { id:'ghost', name:'幻影分身', tip:'兩顆假球騙門將，他一定撲錯邊',       cost:100, pts:300, mul:1.5, c:'#b06bff', cols:[0xb06bff,0xe6ccff] },
+  seek:  { id:'seek',  name:'金靶追蹤', tip:'自動轉彎追上黃金靶，穩拿靶心加分',     cost:100, pts:300, mul:1.5, c:'#ffd21f', cols:[0xffd21f,0xfff3b0] },
+  meteor:{ id:'meteor',name:'流星天降', tip:'終極大招：門將動不了，球必進上角',     cost:150, pts:600, mul:2,   c:'#8fd0ff', cols:[0xffffff,0x8fd0ff,0x5a8cff], top:true } };
+const ULT_MAX = 150, ULT_GIFT = 100, GHOSTS = [];
 const TALLY = { on:false, tok:0 };   // 進球加分結算的狀態（結算進行中，記分板先不更新）
 const G = { mode:'title', shot:0, results:[], score:0, streak:0, state:'aim', t:0, wind:0, over:false };
 let best = 0; try{ best = +localStorage.getItem('pk_best') || 0; }catch(_){}
@@ -1450,8 +1490,8 @@ function popup(text, cls=''){
   popupNow(text,cls); }
 function popupNow(text, cls=''){ const d=document.createElement('div'); d.className='pop '+cls; d.textContent=text; $('pops').appendChild(d); setTimeout(()=>d.remove(),1400); }
 
-function resetBall(){ Object.assign(B,{ spin:0, speed:0, flying:false, crossed:false, result:null, tFly:0, hitPost:false, goalPoint:null, pending:null, tHit:false, ult:false, cut:false, side:1, tr0:null, tl0:null, rec:[], tRec:0, crossPt:null, pred:null, highlight:false, replayed:false, wallHit:false }); B.p.set(0,BALL_R,0); B.v.set(0,0,0); ball.rotation.set(0,0,0); }
-function resetKeeper(){ Object.assign(K,{ x:0, from:0, tx:0, ty:0, t:0, diving:false, reactLeft:0, saved:false, hasBall:false });
+function resetBall(){ Object.assign(B,{ spin:0, speed:0, flying:false, crossed:false, result:null, tFly:0, hitPost:false, goalPoint:null, pending:null, tHit:false, ult:false, cut:false, side:1, tr0:null, tl0:null, rec:[], tRec:0, crossPt:null, pred:null, highlight:false, replayed:false, wallHit:false, mPhase:9, mT:0 }); ball.visible=true; METEOR.star.visible=METEOR.glow.visible=false; B.p.set(0,BALL_R,0); B.v.set(0,0,0); ball.rotation.set(0,0,0); }
+function resetKeeper(){ Object.assign(K,{ x:0, from:0, tx:0, ty:0, t:0, diving:false, reactLeft:0, saved:false, hasBall:false, blown:0, stun:false }); GHOSTS.forEach(g=>g.m.visible=false); document.body.classList.remove('meteor');
   keeper.position.set(0,0,GOAL_Z+0.4); keeper.rotation.set(0,0,0); keeper.userData.arms.forEach((a,i)=>a.rotation.z=(i?1:-1)*-0.35); }
 function newShot(){
   const wmax=TUNE.wind*dif().wind; G.wind = wmax ? +rnd(-wmax,wmax).toFixed(1) : 0;
@@ -1459,11 +1499,12 @@ function newShot(){
   hero.position.copy(HERO_HOME); hero.rotation.set(0,0.35,0); resetRig();
   placeTargets(); setWall(G.mode==='play' && dif().wall); if($('hint').textContent==='點一下繼續') $('hint').hidden=true;
   G.state='aim'; G.t=0; updateHUD();
+  if(G.mode==='play' && G.shot===0 && G.round===1 && G.ultPow>=100 && !G.failed) setTimeout(()=>{ if(G.state==='aim') popup('送你一招大絕招・點右下角選招','gold'); },1200);
   if(G.mode==='play' && G.shot===0){ const d=dif(); setTimeout(()=>{ if(G.state==='aim') popup(d.wall?`${d.stage}・繞過人牆`:d.move?`${d.stage}・靶會移動`:d.stage,'gold'); },250); }
   if(G.mode==='play' && G.shot===ROUND-1){ setTimeout(()=>{ if(G.state==='aim') popup('決勝球・分數 ×2','gold'); },300); excite(.5,1.5); }
 }
 function setPlayUI(on){ if(TALLY.on) tallyEnd(); setTimeout(updateUlt,0); $('hud').hidden=!on; $('bottom').hidden=!on; $('title').hidden=on; $('locker').hidden=true; }
-function newRound(){ G.mode='play'; G.fever=false; G.round=1; G.allGoals=0; G.ultPow=0; G.ultArmed=false; G.shot=0; G.results=[]; G.score=0; G.streak=0; G.over=false; G.near=null; G.stars=[]; tallyEnd(); $('roundCard').hidden=true; $('end').hidden=true; $('tele').textContent=''; setPlayUI(true);
+function newRound(){ G.mode='play'; G.fever=false; G.round=1; G.allGoals=0; G.ultPow=ULT_GIFT; G.ultArmed=null; G.shot=0; G.results=[]; G.score=0; G.streak=0; G.over=false; G.near=null; G.stars=[]; G.failed=false; G.stageScore=0; G.stageGoals=0; tallyEnd(); $('roundCard').hidden=true; $('end').hidden=true; $('tele').textContent=''; setPlayUI(true);
   $('hint').textContent='從球往上滑射門・射進黃色靶環加 150 分'; $('hint').hidden=false; newShot(); setTimeout(()=>sfx.whistle(false),300); }
 // 開場：鏡頭繞主角環場，主角原地熱身
 function showTitle(){
@@ -1547,20 +1588,29 @@ function tryShoot(p){
 function stepBall(p,v,spin,wind,dt){ v.y-=9.8*dt; v.x+=(spin*v.z+wind*0.9)*dt; v.multiplyScalar(1-0.06*dt); p.addScaledVector(v,dt); }
 function launch(){
   const q=B.pending;
-  if(G.mode==='play' && G.ultArmed){ B.ult=true; G.ultArmed=false; G.ultPow=0; q.v.multiplyScalar(1.12); q.speed*=1.12; updateUlt(); } B.v.copy(q.v); B.spin=q.spin; B.speed=q.speed; B.flying=true; B.tFly=0;
+  const U = (G.mode==='play' && G.ultArmed) ? ULT[G.ultArmed] : null; closeUltMenu();
+  if(U){ B.ult=U.id; G.ultArmed=null; G.ultPow=Math.max(0,G.ultPow-U.cost); const k = U.id==='fire'?1.3 : U.id==='meteor'?1.25 : 1.1; q.v.multiplyScalar(k); q.speed*=k; updateUlt(); } B.v.copy(q.v); B.spin=q.spin; B.speed=q.speed; B.flying=true; B.tFly=0;
   sfx.kick(q.pw); shake = REDUCED ? 0 : 0.2+q.pw*0.2;
   // 觸球頓格＋鏡頭往前一縮：力道越大停得越久
   if(!REDUCED){ hitstop = B.ult ? 0.16 : 0.05+q.pw*0.04; fovKick = B.ult ? 9 : 2+q.pw*4; }
-  if(B.ult){ shake=REDUCED?0:0.6; burst(B.p,80,[0xff4d2e,0xffb23f,0xfff1c0],7,0.4,0.6,0); popup('大絕招！','gold'); excite(.9,1.2); sfx.kick(1.2); }
+  if(U){ const big=U.id==='meteor'; shake=REDUCED?0:(big?1:0.6); burst(B.p,big?220:90,U.cols.concat(0xfff1c0),big?11:7,big?.5:.4,big?.9:.6,0); popup(big?`終極大招・${U.name}`:`${U.name}！`,'gold'); excite(big?1:.9,big?2.5:1.2); sfx.kick(1.2);
+    if(big){ if(!REDUCED) hitstop=.32; sfx.boom(0,false); goalImpactFlash(); document.body.classList.add('meteor'); B.mPhase=0; B.mT=0; } }
   burst(B.p,24,[0xffffff,0xffb23f],4,0.25,0.35,0);
   $('tele').textContent = `球速 ${(q.speed*3.6)|0} km/h・仰角 ${(q.pitch*57.3).toFixed(0)}°・弧線 ${q.spin>=0?'+':''}${q.spin.toFixed(2)}`;
   // 門將：先模擬整條球路預測落點，再加上誤判
   const pp=B.p.clone(), vv=B.v.clone(); let tt=0; while(pp.z>GOAL_Z && tt<3){ stepBall(pp,vv,B.spin,G.wind,1/120); tt+=1/120; }
   B.pred = pp.clone();
-  const D=G.mode==='play'?dif():DIFF[0], err=TUNE.err*D.err*(B.ult?2.2:1), reach=TUNE.reach+D.reach;
+  const D=G.mode==='play'?dif():DIFF[0], err=TUNE.err*D.err*(B.ult==='fire'?2.2:1), reach=TUNE.reach+D.reach;
   K.tx = clamp(pp.x + rnd(-err,err), -reach, reach);
   K.ty = clamp(pp.y + rnd(-err,err)*0.5, 0, 2.4);
-  K.reactLeft = TUNE.react*D.react + (B.ult?0.35:0); K.diveTime = 0.45;   // 大絕招：門將被震住、慢半拍又容易判斷錯
+  K.reactLeft = TUNE.react*D.react + (B.ult?0.3:0); K.diveTime = 0.45;   // 大絕招：門將被震住、慢半拍
+  B.aim=null;
+  if(B.ult==='ghost'){ // 門將一定撲向球的另一邊；兩顆假球一顆飛向他撲的那邊、一顆飛中路
+    const sd = Math.abs(pp.x)<0.4 ? (Math.random()<.5?-1:1) : -Math.sign(pp.x); K.tx=sd*reach; K.ty=1.2;
+    GHOSTS.forEach((g,i)=>{ g.p.copy(B.p); g.v.copy(B.v); g.v.x = i ? B.v.x*0.15 : -B.v.x + sd*2.2; g.v.y*= i?1.25:1; g.m.visible=true; g.m.material.opacity=.75; g.t=0; }); }
+  if(B.ult==='seek'){ let best=null, bd=1e9; for(const t of targets){ if(!t.visible||t.userData.hit) continue; const d=Math.abs(t.position.x-pp.x); if(d<bd){ bd=d; best=t; } } B.aim = best ? best.position : null;
+    if(best){ K.tx = clamp(best.position.x + rnd(-err,err)*1.6, -reach, reach); } }
+  if(B.ult==='meteor'){ const sd = Math.abs(pp.x)<0.3 ? (Math.random()<.5?-1:1) : Math.sign(pp.x); B.aim=new THREE.Vector3(sd*(GOAL_W/2-0.6), GOAL_H-0.55, GOAL_Z-0.3); K.reactLeft=99; K.stun=true; B.pred=B.aim.clone(); }
   if(G.mode==='demo'){ K.tx = clamp(-pp.x*0.5,-TUNE.reach,TUNE.reach); K.reactLeft = 0.45; }   // 示範球：門將撲錯邊
   G.state='flight'; G.t=0;
 }
@@ -1657,10 +1707,10 @@ function finishShot(res){
     if(Math.abs(B.spin)>0.3) bonus.push(['香蕉球',50]);
     if(B.speed>27) bonus.push(['重砲',50]);
     if(B.tHit) bonus.push(['黃金靶心',150]);
-    if(B.ult) bonus.push(['大絕招',300]);
+    if(B.ult) bonus.push([ULT[B.ult].name,ULT[B.ult].pts]);
     if(G.streak===3) bonus.push(['帽子戲法',200]);
     const decider = G.shot===ROUND-1, feverNow = !!G.fever;
-    bonus.forEach(b=>pts+=b[1]); pts=Math.round(pts*(1+0.5*(G.streak-1))*(B.ult?1.5:1)*(feverNow?1.5:1)*(decider?2:1)); B.highlight = bonus.length>0 || decider;
+    bonus.forEach(b=>pts+=b[1]); pts=Math.round(pts*(1+0.5*(G.streak-1))*(B.ult?ULT[B.ult].mul:1)*(feverNow?1.5:1)*(decider?2:1)); B.highlight = bonus.length>0 || decider;
     const tags = bonus.map(b=>b[0]).concat(decider?['決勝球×2']:[], feverNow?['FEVER×1.5']:[]);
     if(G.streak===2) setTimeout(()=>popup('DOUBLE! 2 連進','gold'),1100);
     if(G.streak===3) setTimeout(()=>popup('帽子戲法 HAT-TRICK +200','gold'),1100);
@@ -1668,9 +1718,10 @@ function finishShot(res){
     G.allGoals=(G.allGoals||0)+1; chargeUlt(B.ult?0:34+bonus.length*12);
     const from=G.score; G.score+=pts; G.results[G.shot]=true;
     popup(decider?'決勝球 GOAL!':'GOAL!');
-    const muls=[]; if(G.streak>1) muls.push([`${G.streak} 連進`,1+0.5*(G.streak-1)]); if(B.ult) muls.push(['大絕招',1.5]); if(feverNow) muls.push(['FEVER',1.5]); if(decider) muls.push(['決勝球',2]);
+    const muls=[]; if(G.streak>1) muls.push([`${G.streak} 連進`,1+0.5*(G.streak-1)]); if(B.ult) muls.push([B.ult==='meteor'?'終極大招':'大絕招',ULT[B.ult].mul]); if(feverNow) muls.push(['FEVER',1.5]); if(decider) muls.push(['決勝球',2]);
     scoreTally([['進球',100],...bonus], muls, pts, from);
     sfx.goal(); hype=1; shake = REDUCED ? 0 : 0.6; goalImpact(cp, bonus.length>0||decider);
+    if(B.ult==='meteor'){ METEOR.glow.visible=false; [150,320].forEach(ms=>setTimeout(()=>{ shock.userData.t=0; shock.userData.k=2.4; shock.visible=true; goalImpactFlash(); },ms)); if(!REDUCED) hitstop=.22; popup('沒人擋得住！','gold'); shake=REDUCED?0:1.1; burst(new THREE.Vector3(cp.x,cp.y,GOAL_Z-0.4),320,[0xffffff,0x8fd0ff,0x5a8cff,0xffd21f],14,0.5,1.4,3); sfx.boom(0,false); sfx.crackle(0); fireworkShow(2); setTimeout(()=>document.body.classList.remove('meteor'),500); }
     netRipple = { x:cp?cp.x:0, y:cp?cp.y:1.2, t:0 };
     burst(new THREE.Vector3(cp?cp.x:0,cp?cp.y:1.2,GOAL_Z-0.4),140,[0xffb23f,0xf4f1e6,0xff6a4d,0x37c6d0],9,0.32,1.1,4);
     drawLED('goal');
@@ -1700,24 +1751,47 @@ function afterResult(){
 // 一輪踢完：小結卡，按鈕直接進下一輪（不設及格門檻）
 /* ---------- 大絕招：進球、加分項集氣，滿了按「🔥 大絕招」，下一腳變火焰重砲 ---------- */
 function flashCut(){ if(REDUCED) return; const f=$('flash'); f.classList.remove('on'); void f.offsetWidth; f.classList.add('on'); }
-function updateUlt(){ const p=Math.round(G.ultPow||0), b=$('ultBtn'), full=p>=100, armed=!!G.ultArmed;
-  b.hidden = G.mode!=='play' || G.over;
-  $('ultArc').style.strokeDashoffset = (213.6*(1-p/100)).toFixed(1);
-  b.classList.toggle('full', full && !armed); b.classList.toggle('armed', armed);
-  $('ultTxt').textContent = armed ? '上膛' : full ? '發動' : p+'%';
-  $('ultLbl').textContent = armed ? '滑出去！' : '大絕招';
-  b.setAttribute('aria-label', armed ? '大絕招已上膛，再按取消' : full ? '發動大絕招' : `大絕招集氣 ${p}%`); b.disabled = !full && !armed; }
-function chargeUlt(v){ if(G.ultArmed) return; const was=G.ultPow||0; G.ultPow=Math.min(100,was+v); if(was<100 && G.ultPow>=100) setTimeout(()=>popup('大絕招集滿！','gold'),900); updateUlt(); }
-$('ultBtn').onclick=()=>{ if(G.ultPow<100 || G.state!=='aim') return; G.ultArmed=!G.ultArmed; audioInit(); if(G.ultArmed){ sfx.target(); popup('大絕招上膛','gold'); } updateUlt(); };
+function updateUlt(){ const p=Math.round(G.ultPow||0), b=$('ultBtn'), full=p>=100, max=p>=ULT_MAX, armed=!!G.ultArmed;
+  b.hidden = G.mode!=='play' || G.over; if(b.hidden) closeUltMenu();
+  $('ultArc').style.strokeDashoffset = (213.6*(1-Math.min(100,p)/100)).toFixed(1);
+  $('ultArc2').style.strokeDashoffset = (213.6*(1-Math.max(0,p-100)/(ULT_MAX-100))).toFixed(1);   // 第二圈（白色）：存到 150% 可放終極大招
+  b.classList.toggle('full', full && !armed); b.classList.toggle('armed', armed); b.classList.toggle('max', max && !armed);
+  $('ultTxt').textContent = armed ? '上膛' : max ? '終極' : full ? '選招' : p+'%';
+  $('ultLbl').textContent = armed ? ULT[G.ultArmed].name : full ? `大絕招 ${p}%` : '大絕招';
+  b.setAttribute('aria-label', armed ? `${ULT[G.ultArmed].name}已上膛，再按取消` : full ? `選擇大絕招，集氣 ${p}%` : `大絕招集氣 ${p}%`); b.disabled = !full && !armed; }
+function chargeUlt(v){ if(G.ultArmed) return; const was=G.ultPow||0; G.ultPow=Math.min(ULT_MAX,was+v);
+  if(was<100 && G.ultPow>=100) setTimeout(()=>popup('大絕招集滿！可以選招','gold'),900);
+  if(was<ULT_MAX && G.ultPow>=ULT_MAX) setTimeout(()=>popup('終極大招解鎖！','gold'),900); updateUlt(); }
+function closeUltMenu(){ $('ultMenu').hidden=true; }
+function openUltMenu(){ const m=$('ultMenu'); m.innerHTML=''; Object.values(ULT).forEach((u,i)=>{ const b=document.createElement('button'); b.type='button'; b.className='um'+(u.top?' top':''); b.style.setProperty('--c',u.c); b.style.animationDelay=(i*45)+'ms';
+    b.disabled=G.ultPow<u.cost; b.dataset.id=u.id; b.innerHTML=`<i></i><span><b>${u.name}</b><small>${u.tip}</small></span><em>${u.cost}%</em>`;
+    b.onclick=e=>{ e.stopPropagation(); if(G.ultPow<u.cost || G.state!=='aim') return; G.ultArmed=u.id; closeUltMenu(); sfx.target(); popup(`${u.name}・上膛`,'gold'); if(u.top){ tone(70,.8,'sawtooth',.2,160); shake=REDUCED?0:.25; } updateUlt(); }; m.appendChild(b); });
+  m.hidden=false; }
+$('ultBtn').onclick=()=>{ if(G.state!=='aim') return; audioInit();
+  if(G.ultArmed){ G.ultArmed=null; updateUlt(); return; }   // 已上膛再按＝取消，集氣不扣
+  if(G.ultPow<100) return; if($('ultMenu').hidden) openUltMenu(); else closeUltMenu(); };
+for(let i=0;i<2;i++){ const m=new THREE.Mesh(new THREE.SphereGeometry(BALL_R,20,12), new THREE.MeshBasicMaterial({ color:0xc9a0ff, transparent:true, opacity:.75, toneMapped:false })); m.visible=false; scene.add(m); GHOSTS.push({ m, p:new THREE.Vector3(), v:new THREE.Vector3(), t:0 }); }
+const METEOR = { star:new THREE.Sprite(new THREE.SpriteMaterial({ map:glowTex, color:0xdff1ff, blending:THREE.AdditiveBlending, depthWrite:false, fog:false, transparent:true })),
+                 glow:new THREE.Sprite(new THREE.SpriteMaterial({ map:glowTex, color:0x9fd0ff, blending:THREE.AdditiveBlending, depthWrite:false, fog:false, transparent:true })) };
+METEOR.star.visible=METEOR.glow.visible=false; scene.add(METEOR.star,METEOR.glow);
+function goalImpactFlash(){ const b=$('boom'); b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); }
 function roundBreak(){
   G.state='idle'; const g=G.results.filter(Boolean).length, nr=G.round+1;
-  G.stars.push(g); $('rcTitle').textContent=`${dif().stage}結束`; $('rcScore').textContent=G.score;
+  // 晉級門檻：這一關至少要進 1 球。沒進就留在本關重踢，分數退回進關時的分數（避免靠安慰分刷分）
+  G.failed = g<PASS; $('rcQuit').hidden=!G.failed;
+  if(G.failed){ $('rcTitle').textContent=`${dif().stage}未過關`; $('rcScore').textContent=G.score; $('rcStars').innerHTML=starStr(0); $('rcStars').setAttribute('aria-label','0 顆星');
+    $('rcGoals').textContent=`${ROUND} 球進 0 球`; $('rcNext').textContent=`至少進 ${PASS} 球才能晉級${DIFF[nr-1].stage}，這一關的分數不計`; $('rcGo').textContent=`重踢${dif().stage}`;
+    $('roundCard').hidden=false; sfx.whistle(false); return; }
+  G.stars.push(g); $('rcTitle').textContent=`${dif().stage}過關`; $('rcScore').textContent=G.score;
   $('rcStars').innerHTML=starStr(g); $('rcStars').setAttribute('aria-label',`${g} 顆星`);
   $('rcGoals').textContent=`${ROUND} 球進 ${g} 球・大絕招 ${Math.round(G.ultPow)}%`;
   $('rcNext').textContent=`下一關 ${DIFF[nr-1].stage}：${DIFF[nr-1].name}`; $('rcGo').textContent=`進入${DIFF[nr-1].stage}`;
   $('roundCard').hidden=false; sfx.whistle(false);
 }
-$('rcGo').onclick=()=>{ $('roundCard').hidden=true; G.round++; G.shot=0; G.results=[]; newShot(); setTimeout(()=>sfx.whistle(false),200); };
+$('rcGo').onclick=()=>{ $('roundCard').hidden=true;
+  if(G.failed){ G.failed=false; G.score=G.stageScore||0; G.allGoals=G.stageGoals||0; G.streak=0; G.fever=false; } else { G.round++; G.stageScore=G.score; G.stageGoals=G.allGoals||0; }
+  G.shot=0; G.results=[]; newShot(); setTimeout(()=>sfx.whistle(false),200); };
+$('rcQuit').onclick=()=>{ $('roundCard').hidden=true; G.failed=false; G.score=G.stageScore||0; G.results=[]; endRound(); };
 function endRound(){
   G.over=true; G.state='idle';
   const goals=G.allGoals||0; G.stars.push(G.results.filter(Boolean).length); const st=G.stars.reduce((a,b)=>a+b,0);
@@ -1859,18 +1933,35 @@ function frame(rawDt, draw=true){
   updateHeroRig(dt); updateReal(dt);
 
   if(B.flying && G.state!=='replay'){
-    const sub=4;
+    /* 流星天降的三段演出：① 球筆直衝上夜空 → ② 消失在星空裡，全場安靜一拍、招式名橫幅掃過 → ③ 一顆大流星從天上砸向球門上角 */
+    let hold=false;
+    if(B.ult==='meteor' && B.mPhase<2){ hold=true; B.mT+=dt;
+      if(B.mPhase===0){ B.p.x+=(0-B.p.x)*dt*2; B.p.y+=dt*(14+B.mT*70); B.p.z-=dt*5; for(let f=0;f<8;f++) emit(B.p,rnd(-1.5,1.5),rnd(-6,-1),rnd(-1,1),[0xffffff,0x8fd0ff,0x5a8cff][f%3],rnd(.4,.8),rnd(.4,.7),0,1.5);
+        if(B.mT>0.55){ B.mPhase=1; ball.visible=false; METEOR.star.position.copy(B.p); METEOR.star.visible=true; METEOR.star.scale.setScalar(.1); burst(B.p,60,[0xffffff,0x8fd0ff],6,.5,.7,0);
+          const c=$('cutin'); c.classList.remove('on'); void c.offsetWidth; c.classList.add('on'); hype=0; tone(1800,.5,'sine',.12,2600); tone(180,.9,'sawtooth',.16,700,.25); } }
+      else { const u=(B.mT-0.55)/0.85; METEOR.star.scale.setScalar(2+Math.sin(u*Math.PI)*9+Math.random()*1.5); METEOR.star.material.opacity=.5+.5*Math.sin(u*20);
+        if(u>=1){ B.mPhase=2; METEOR.star.visible=false; ball.visible=true; METEOR.glow.visible=true; B.p.set(B.aim.x*0.15,23,GOAL_Z+15); B.v.copy(B.aim).sub(B.p).setLength(46); B.speed=46;
+          if(WALL.on && !WALL.blown){ WALL.blown=true; WALL.t=0; }
+          goalImpactFlash(); shake=REDUCED?0:.5; hype=1.4; sfx.boom(0,false); noise(1.2,.4,300,'lowpass',0,1,2400); tone(900,1,'sawtooth',.14,90); } } }
+    if(B.ult==='meteor' && B.mPhase===2 && !B.result){ METEOR.glow.position.copy(B.p); METEOR.glow.scale.setScalar(5+Math.random()*1.2); shake=REDUCED?0:Math.max(shake,.25);
+      for(let f=0;f<10;f++) emit(B.p,rnd(-2,2),rnd(-1,3),rnd(-1,3),[0xffffff,0xbfe6ff,0x5a8cff,0xffd21f][f%4],rnd(.6,1.2),rnd(.5,.9),-1,1.5); }
+    const sub=hold?0:4;
     for(let s=0;s<sub;s++){
-      const h=dt/sub, prevZ=B.p.z; stepBall(B.p,B.v,B.spin,G.wind,h); B.tFly+=h;
+      const h=dt/sub, prevZ=B.p.z; stepBall(B.p,B.v,B.spin,(B.ult==='meteor'||B.ult==='seek')?0:G.wind,h); B.tFly+=h;
+      // 追蹤類大絕招：保持球速，把方向往目標點帶。流星帶得又快又準（等於不受重力），金靶追蹤帶得柔一點、看得出轉彎
+      if(B.aim && !B.result && B.p.z>B.aim.z+0.05){ const sp=B.v.length(), d=_tp0.copy(B.aim).sub(B.p).normalize().multiplyScalar(sp); B.v.lerp(d, Math.min(1,(B.ult==='meteor'?9:5.5)*h)).setLength(sp); }
       if(B.p.y<BALL_R){ B.p.y=BALL_R; if(B.v.y<-1) B.v.y*=-0.5; else B.v.y=0; B.v.x*=0.985; B.v.z*=0.985; B.spin*=0.9; }
       // 人牆：球穿過人牆所在的平面時，位置落在三人範圍內、高度沒超過頭頂就被擋下
-      if(WALL.on && !B.result && !B.wallHit && prevZ>WALL.z && B.p.z<=WALL.z && Math.abs(B.p.x-WALL.x)<WALL.hw+BALL_R && B.p.y<WALL.h+BALL_R){
+      if(WALL.on && !WALL.blown && (B.ult==='fire'||B.ult==='meteor') && prevZ>WALL.z+1.2 && B.p.z<=WALL.z+1.2 && (B.ult==='meteor' || (Math.abs(B.p.x-WALL.x)<WALL.hw+0.5 && B.p.y<WALL.h+0.4))){
+        WALL.blown=true; WALL.t=0; burst(_tp1.set(WALL.x,1,WALL.z),70,ULT[B.ult].cols,7,0.32,0.6); sfx.post(); shake=REDUCED?0:Math.max(shake,0.4); }
+      if(WALL.on && !WALL.blown && !B.result && !B.wallHit && prevZ>WALL.z && B.p.z<=WALL.z && Math.abs(B.p.x-WALL.x)<WALL.hw+BALL_R && B.p.y<WALL.h+BALL_R){
         B.wallHit=true; WALL.t=0; B.p.z=WALL.z+0.05; B.v.z=Math.abs(B.v.z)*0.28; B.v.x=rnd(-4,4); B.v.y=rnd(2,4.5); B.spin=0;
         burst(B.p,30,[0xe8e4d8,0xffffff],5,0.26,0.4); sfx.post(); shake=REDUCED?0:0.3; finishShot('miss'); }
       // 門將碰撞
       if(!B.result && !K.saved && B.p.z<GOAL_Z+1.2 && B.p.z>GOAL_Z-0.3){
         const [a,b]=keeperCapsule();
-        if(distSeg(B.p,a,b)<0.34+BALL_R){ K.saved=true;
+        if(distSeg(B.p,a,b)<0.34+BALL_R && B.ult==='fire'){ K.saved=true; K.blown=1; B.v.multiplyScalar(0.85); burst(B.p,60,ULT.fire.cols,7,0.34,0.5); shake=REDUCED?0:0.5; sfx.post(); popup('撞飛門將！','sm'); }
+        else if(distSeg(B.p,a,b)<0.34+BALL_R){ K.saved=true;
           if(B.speed<23 && Math.abs(B.p.x-K.x)<0.5 && !K.diving){ K.hasBall=true; B.v.set(0,0,0); B.flying=false; }
           else { B.v.z=Math.abs(B.v.z)*0.35; B.v.x=(B.p.x-K.x>=0?1:-1)*rnd(3,6); B.v.y=rnd(2,5); B.spin=0; }
           burst(B.p,36,[0x37c6d0,0xffffff],5,0.28,0.4); shake=REDUCED?0:0.3; finishShot('save'); } }
@@ -1899,7 +1990,10 @@ function frame(rawDt, draw=true){
     }
     ball.rotation.x-=B.v.length()*dt*4; ball.rotation.y+=B.spin*dt*40;
     if(B.v.lengthSq()>40 && Math.random()<0.7) emit(B.p,0,0,0,0xffe2b0,0.16,0.25,0);
-    if(B.ult && G.state==='flight'){ for(let f=0;f<5;f++) emit(B.p, rnd(-1,1), rnd(0,1.5), rnd(-.5,1.5), f%2?0xff4d2e:0xffb23f, rnd(.3,.55), rnd(.25,.45), -1.5, 2); }   // 火焰拖尾
+    if(B.ult && G.state==='flight'){ const U=ULT[B.ult], n=B.ult==='meteor'?9:5, sz=B.ult==='meteor'?1.7:1;   // 各招自己顏色的拖尾，流星最粗
+      for(let f=0;f<n;f++) emit(B.p, rnd(-1,1)*sz, rnd(0,1.5)*sz, rnd(-.5,1.5), U.cols[f%U.cols.length], rnd(.3,.55)*sz, rnd(.25,.45)*sz, -1.5, 2); }
+    for(const g of GHOSTS){ if(!g.m.visible) continue; g.t+=dt; stepBall(g.p,g.v,0,0,dt); if(g.p.y<BALL_R){ g.p.y=BALL_R; g.v.y*=-.4; } g.m.position.copy(g.p); g.m.rotation.x-=dt*18;
+      emit(g.p,rnd(-.5,.5),rnd(0,1),rnd(-.3,.8),0xb06bff,.3,.3,-1,2); if(g.p.z<GOAL_Z+0.6 || g.t>2.5){ g.m.material.opacity-=dt*5; if(g.m.material.opacity<=0) g.m.visible=false; } }
     if(!B.result && (B.tFly>3.5 || B.p.z<GOAL_Z-4 || Math.abs(B.p.x)>20 || (B.crossed && !B.goalPoint))) finishShot('miss');
     if(B.result && B.v.lengthSq()<0.05) B.flying=false;
   }
@@ -1912,13 +2006,17 @@ function frame(rawDt, draw=true){
     if(u.amp && !u.hit) tg.position.x=Math.max(-GOAL_W/2+0.62,Math.min(GOAL_W/2-0.62,u.bx+Math.sin(T*u.sp+u.ph)*u.amp));
     if(u.hit>0){ u.hit+=dt; tg.scale.setScalar(1+u.hit*3); u.ring.material.opacity=Math.max(0,1-u.hit*2); if(u.hit>0.5) tg.visible=false; } }
   if(shock.visible){ const u=(shock.userData.t+=dt)/0.55; shock.scale.setScalar((0.4+u*5.5)*shock.userData.k); shock.material.opacity=Math.max(0,1-u)*.9; if(u>=1) shock.visible=false; }
-  if(WALL.on){ WALL.t+=dt; const j=Math.max(0,Math.sin(Math.min(1,WALL.t/0.45)*Math.PI))*0.12; WALL.figs.forEach(f=>f.position.y=j); }   // 擋到球時人牆小跳一下
+  if(WALL.on && WALL.blown){ WALL.t+=dt; const u=Math.min(1,WALL.t/.5); WALL.figs.forEach((f,i)=>{ f.rotation.x=-1.5*u; f.rotation.z=(i-1)*.7*u; f.position.x=WALL.x+(i-1)*(0.64+1.3*u); f.position.z=WALL.z-1.2*u; f.position.y=Math.sin(u*Math.PI)*.5; }); }
+  else if(WALL.on){ WALL.t+=dt; const j=Math.max(0,Math.sin(Math.min(1,WALL.t/0.45)*Math.PI))*0.12; WALL.figs.forEach(f=>f.position.y=j); }   // 擋到球時人牆小跳一下
   if(G.state==='replay') replayFrame(dt); else updateKeeper(dt);
   if(G.state==='flight' || (G.state==='result' && G.t<1.4)) recFrame(dt);
 
   ball.position.copy(B.p);
   // 大絕招上膛：球腳下先冒火，提醒「下一腳不一樣」
-  if(G.ultArmed && G.state==='aim' && Math.random()<.7) emit(B.p.clone().add(new THREE.Vector3(rnd(-.12,.12),rnd(-.05,.1),rnd(-.12,.12))), rnd(-.2,.2), rnd(.8,1.6), rnd(-.2,.2), Math.random()<.5?0xff4d2e:0xffb23f, rnd(.18,.32), rnd(.3,.5), -2, 1.5);
+  if(G.ultArmed && G.state==='aim'){ const U=ULT[G.ultArmed], big=U.top, n=big?3:1;   // 上膛時球身冒出該招顏色的氣場，終極大招的氣場更高更密
+    for(let i=0;i<n;i++) if(Math.random()<.75) emit(B.p.clone().add(new THREE.Vector3(rnd(-.12,.12)*(big?2.4:1),rnd(-.05,.1),rnd(-.12,.12)*(big?2.4:1))), rnd(-.2,.2), rnd(.8,1.6)*(big?2.2:1), rnd(-.2,.2), U.cols[(Math.random()*U.cols.length)|0], rnd(.18,.32)*(big?1.5:1), rnd(.3,.5)*(big?1.6:1), -2, 1.5); }
+  if(K.blown){ K.blown=Math.min(1.6,K.blown+dt*3); keeper.rotation.x=-Math.min(1.45,(K.blown-1)*4); keeper.position.z=Math.max(GOAL_Z-1.4,keeper.position.z-dt*5); keeper.position.y=Math.sin(Math.min(1,(K.blown-1)/.6)*Math.PI)*.5; }
+  if(K.stun && G.state==='flight'){ keeper.rotation.z=Math.sin(T*46)*.05; keeper.userData.arms.forEach((a,i)=>a.rotation.z=(i?1:-1)*-2.6); }
   ballShadow.position.set(B.p.x,0.011,B.p.z); ballShadow.scale.setScalar(1+B.p.y*0.4); ballShadow.material.opacity=0.35/(1+B.p.y);
 
   if(netRipple){ netRipple.t+=dt*(RP.on?RP.rate:1); const p=backNetGeo.attributes.position, amp=0.7*Math.exp(-netRipple.t*3);
@@ -1958,6 +2056,8 @@ function frame(rawDt, draw=true){
     camPos.set(Math.sin(a)*17, 9, -7+Math.cos(a)*14); camTarget.set(0,3.5,GOAL_Z+7);
   } else if(G.state==='flight' || G.state==='result'){
     const cx=clamp(B.p.x,-5,5); camPos.set(cx*0.45,1.7+Math.min(B.p.y,3)*0.2,Math.max(B.p.z+4.6,GOAL_Z+5.5)); camTarget.set(cx*0.7,Math.max(1,B.p.y*0.8),Math.min(B.p.z-6,GOAL_Z));
+    // 流星天降：先仰頭看球衝上天，再退到球場中段、同時看得到夜空和球門，等流星砸下來
+    if(B.ult==='meteor' && G.state==='flight'){ if(B.mPhase<2){ camPos.set(0.6,1.5,5.2); camTarget.set(0,Math.min(B.p.y,16)*0.9+1,B.p.z-2); } else { camPos.set(-B.aim.x*0.5,1.9,GOAL_Z+13.5); camTarget.set(B.aim.x*0.5,Math.max(2.2,B.p.y*0.3),GOAL_Z); } }
     // 進球：先看球入網 0.9 秒，再切到主角正面的慶祝近景，鏡頭低角度仰拍，背後是看台與高空煙火
     // 進球後先拉遠、仰角看球門上方的夜空（煙火在這個方向緻放），2 秒後才切主角慶祝近景
     if(G.state==='result' && B.result==='goal' && G.t>0.6 && G.t<=1.5){ camPos.set(clamp(B.p.x,-3,3)*0.35, 2.3, GOAL_Z+12.5); camTarget.set(0, 7.2, GOAL_Z-12); }
@@ -1987,7 +2087,7 @@ function loop(){ requestAnimationFrame(loop); const raw=clock.getDelta(); adapt(
 const DEBUG=new URLSearchParams(location.search).has('debug');
 if(DEBUG){
   showTitle(); frame(1/60);
-  window.SL={ THREE, scene, renderer, WALL, targets, G, B, K, RP, Q, TUNE, hero, keeper, camera, finishShot, updateUlt, REAL, KIT, setAvatar, showLocker, newRound, startDemo, showTitle, tryShoot, startReplay,
+  window.SL={ THREE, scene, renderer, WALL, targets, ULT, GHOSTS, openUltMenu, launch, G, B, K, RP, Q, TUNE, hero, keeper, camera, finishShot, updateUlt, REAL, KIT, setAvatar, showLocker, newRound, startDemo, showTitle, tryShoot, startReplay,
     step:(n=60,dt=1/60)=>{ for(let i=0;i<n;i++) frame(dt,i===n-1); return G.state; },
     swipe:(dx=0,len=0.45,bulge=0,ms=180)=>{ const W=innerWidth,H=innerHeight, x0=W/2, y0=H*.82, p=[]; for(let i=0;i<=12;i++){ const u=i/12;
         p.push({ x:x0+dx*W*u+bulge*W*Math.sin(Math.PI*u), y:y0-len*H*u, t:u*ms }); } tryShoot(p); return B.pending; },
