@@ -66,7 +66,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--amber);outline-
 #ultMenu .um i{width:34px;height:34px;border-radius:50%;background:var(--c);box-shadow:0 0 14px var(--c)}
 #ultMenu .um b{display:block;font-size:15px;font-weight:900}#ultMenu .um small{display:block;font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px}
 #ultMenu .um em{font:700 11px var(--mono);font-style:normal;color:var(--amber)}
-#ultMenu .um:disabled{opacity:.45;cursor:default}
+#ultMenu .um:disabled{cursor:not-allowed}
+/* 還不能用的招式：整張轉灰、虛線框、圓點換成鎖、右邊寫還差多少，底下一條集氣進度 */
+#ultMenu .um.locked,#ultMenu .um.top.locked{position:relative;overflow:hidden;background:rgba(14,18,30,.9);border:1px dashed rgba(255,255,255,.22);box-shadow:none;color:rgba(244,241,230,.45)}
+#ultMenu .um.locked i{background:rgba(255,255,255,.1);box-shadow:none;display:grid;place-items:center}
+#ultMenu .um.locked i svg{width:16px;height:16px;fill:rgba(244,241,230,.5)}
+#ultMenu .um.locked small{color:rgba(244,241,230,.32)}
+#ultMenu .um.locked em{color:rgba(244,241,230,.55);text-align:right;line-height:1.3}
+#ultMenu .um.locked u{position:absolute;left:0;bottom:0;height:3px;background:rgba(255,255,255,.35);text-decoration:none}
+#ultMenu .umNote{pointer-events:none;font-size:12px;font-weight:700;color:var(--chalk);background:rgba(8,14,32,.82);border:1px dashed rgba(255,255,255,.3);border-radius:999px;padding:6px 12px;animation:chipIn .26s .2s both}
 #ultMenu .um.top{border-color:rgba(160,215,255,.8);background:linear-gradient(120deg,rgba(20,40,110,.95),rgba(8,14,32,.95))}
 #ultMenu .um.top:not(:disabled){box-shadow:0 0 26px rgba(120,180,255,.55)}
 body.meteor #hud,body.meteor #bottom{filter:brightness(1.3)}
@@ -1615,9 +1623,11 @@ addEventListener('pointerdown', e=>{ audioInit(); if(e.target.closest && e.targe
   // 進球慶祝中點一下就略過，直接下一球
   if(G.mode==='play' && G.state==='result' && B.result==='goal' && G.t>1.2){ afterResult(); return; }
   if(G.mode!=='play'||G.state!=='aim'||G.over) return;
+  SWIPED=false; if(!$('ultMenu').hidden && !(e.target.closest && e.target.closest('.um'))) closeUltMenu();   // 選單開著時在別處按下＝要踢球，選單收起來讓出視野
   path=[{x:e.clientX,y:e.clientY,t:e.timeStamp}]; });
+let SWIPED=false;   // 這次按下之後有沒有滑動；有的話放開時不算「點選招式」
 // 合併事件：手機一幀只回報一個點，快速甩動時改讀瀏覽器合併的全部取樣點，弧線才擬合得準
-addEventListener('pointermove', e=>{ if(!path) return; const evs=e.getCoalescedEvents?e.getCoalescedEvents():[];
+addEventListener('pointermove', e=>{ if(!path) return; if(!SWIPED && Math.hypot(e.clientX-path[0].x,e.clientY-path[0].y)>14){ SWIPED=true; closeUltMenu(); }   /* 從招式卡片上起手滑動也算踢球 */ const evs=e.getCoalescedEvents?e.getCoalescedEvents():[];
   for(const ev of (evs.length?evs:[e])) path.push({x:ev.clientX,y:ev.clientY,t:ev.timeStamp}); });
 addEventListener('pointerup', ()=>{ if(!path) return; const p=path; path=null; lastPath=p; trailFade=1; tryShoot(p); });
 addEventListener('pointercancel', ()=>{ path=null; });
@@ -1855,8 +1865,12 @@ function chargeUlt(v){ if(G.ultArmed) return; const was=G.ultPow||0; G.ultPow=Ma
   if(was<ULT_MAX && G.ultPow>=ULT_MAX) setTimeout(()=>popup('終極大招解鎖！','gold'),900); updateUlt(); }
 function closeUltMenu(){ $('ultMenu').hidden=true; }
 function openUltMenu(){ const m=$('ultMenu'); m.innerHTML=''; Object.values(ULT).forEach((u,i)=>{ const b=document.createElement('button'); b.type='button'; b.className='um'+(u.top?' top':''); b.style.setProperty('--c',u.c); b.style.animationDelay=(i*45)+'ms';
-    b.disabled=G.ultPow<u.cost; b.dataset.id=u.id; b.innerHTML=`<i></i><span><b>${u.name}</b><small>${u.tip}</small></span><em>${u.cost}%</em>`;
-    b.onclick=e=>{ e.stopPropagation(); if(G.ultPow<u.cost || G.state!=='aim') return; G.ultArmed=u.id; closeUltMenu(); sfx.target(); popup(`${u.name}・上膛`,'gold'); if(u.top){ tone(70,.8,'sawtooth',.2,160); shake=REDUCED?0:.25; } updateUlt(); }; m.appendChild(b); });
+    const lock=G.ultPow<u.cost, pw=Math.round(G.ultPow||0); b.disabled=lock; b.classList.toggle('locked',lock); b.dataset.id=u.id; if(lock) b.setAttribute('aria-label',`${u.name}，未解鎖，集氣 ${pw}%，需要 ${u.cost}%`);
+    b.innerHTML = lock ? `<i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 0 1 6 0v3H9Z"/></svg></i><span><b>${u.name}</b><small>${u.tip}</small></span><em>未解鎖<br>還差 ${u.cost-pw}%</em><u style="width:${Math.min(100,pw/u.cost*100).toFixed(0)}%"></u>`
+      : `<i></i><span><b>${u.name}</b><small>${u.tip}</small></span><em>${u.cost}%</em>`;
+    b.onclick=e=>{ e.stopPropagation(); if(SWIPED || G.ultPow<u.cost || G.state!=='aim') return; G.ultArmed=u.id; closeUltMenu(); sfx.target(); popup(`${u.name}・上膛`,'gold'); if(u.top){ tone(70,.8,'sawtooth',.2,160); shake=REDUCED?0:.25; } updateUlt(); }; m.appendChild(b); });
+  // 不想用大絕招也不用關選單：直接滑球射門，選單會自己收起來
+  const n=document.createElement('div'); n.className='umNote'; n.textContent='不選也可以・直接滑球射門'; m.appendChild(n);
   m.hidden=false; }
 $('ultBtn').onclick=()=>{ if(G.state!=='aim') return; audioInit();
   if(G.ultArmed){ G.ultArmed=null; updateUlt(); return; }   // 已上膛再按＝取消，集氣不扣
