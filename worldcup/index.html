@@ -104,6 +104,16 @@ body.meteor #dim{opacity:1}
 #cutin.gold .streak{background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,210,90,.5) 55%,#fff 92%,rgba(255,255,255,0) 100%);box-shadow:0 0 14px 2px rgba(255,200,90,.7)}
 #cutin.gold em{color:rgba(255,240,200,.8)}
 #cutin.on b span:nth-child(5){animation-delay:.52s}
+/* 重擊版字卡（大滿貫）：字更大，一個字一個字從鏡頭前砸下來，每砸一字畫面震一下；不壓暗中央，後面發光的選手看得到 */
+#cutin.slam{background:none}
+#cutin.slam.on,#cutin.slam.on .bar{animation-duration:3.4s}
+#cutin.slam b{font-size:clamp(56px,min(27vw,19vh),200px);letter-spacing:.04em;filter:drop-shadow(0 0 26px rgba(255,170,40,.95)) drop-shadow(0 4px 0 rgba(70,35,0,.95)) drop-shadow(0 0 3px rgba(40,20,0,.9))}
+#cutin.slam.on b span{animation:ciSlam .5s cubic-bezier(.2,1.3,.3,1) both}
+#cutin.slam.on b span:nth-child(1){animation-delay:.25s}#cutin.slam.on b span:nth-child(2){animation-delay:.75s}#cutin.slam.on b span:nth-child(3){animation-delay:1.25s}#cutin.slam.on b span:nth-child(4){animation-delay:1.75s}
+#cutin.slam.on em{animation-delay:1.85s}#cutin.slam.on .streak{animation-delay:1.7s}
+#cutin.slam em{font-size:16px;color:#fff3cf;text-shadow:0 2px 8px rgba(0,0,0,.8)}#cutin.slam .cap{text-shadow:0 2px 8px rgba(0,0,0,.8)}
+@keyframes ciSlam{0%{opacity:0;transform:scale(4.6);filter:blur(16px)}50%{opacity:1;transform:scale(.88);filter:blur(0)}72%{transform:scale(1.1)}100%{opacity:1;transform:none;filter:blur(0)}}
+@media (prefers-reduced-motion:reduce){#cutin.slam.on b span{animation-duration:.01s}}
 @keyframes ciFade{0%{opacity:0}7%{opacity:1}80%{opacity:1}100%{opacity:0}}
 @keyframes ciBar{0%{}12%{transform:none}80%{transform:none}}
 @keyframes ciRule{to{transform:scaleX(1)}}
@@ -1037,6 +1047,7 @@ function updateHeroRig(dt){
     } else if(B.hitPost){ P.aLz=-2.5; P.aRz=2.5; P.aLx=P.aRx=.45; P.hx=-.1; expr='surprised'; }   // 抱頭
     else { P.tx=-.32; P.hx=.42; P.aLz=-.08; P.aRz=.08; P.tz=Math.sin(T*1.5)*.04; expr='sad'; wl=10; }
   }
+  if(G.champ){ const hop=Math.max(0,Math.sin(T*6.2)); P.y=hop*.4; P.aLz=-2.6; P.aRz=2.6; P.aLx=P.aRx=0; P.lL=P.lR=-hop*.45; P.hx=-.2; P.tx=0; expr='laugh'; wl=20; }   // 大滿貫：雙手高舉連跳
   // 踢球：後擺 → 觸球（極快）→ 送腳 → 收腳；與 runup／kick 狀態重疊，所以最後套用
   if(RIG.kickT>=0){ RIG.kickT+=dt; const kt=RIG.kickT;
     if(kt<.1){ P.lR=1.55; P.lL=.18; P.tx=.15; P.aLz=-1.15; P.aRz=.85; P.aLx=.35; wl=48; expr='determined'; }
@@ -1231,6 +1242,7 @@ function updateReal(dt){
   else if(st==='kick' || st==='flight'){ if(REAL.cur==='kick' && A.kick.time>=A.kick.getClip().duration-.05) realAct('idle'); }
   else if(st==='result' && B.result==='goal' && G.t>=CT()-.05){ if(REAL.cur!=='cel'){ REAL.celT=0; } if(REAL.cur!=='cel') REAL.smiling = REAL.forceSmile ?? Math.random()<SMILE_RATE; realAct('cel'); }
   else if(st==='result'){ if(REAL.cur==='kick' && A.kick.time>=A.kick.getClip().duration-.05) realAct('idle'); else if(REAL.cur==='cel') realAct('idle'); }
+  else if(G.champ){ if(REAL.cur!=='cel'){ REAL.smiling=true; realAct('cel'); } }
   else if(st!=='replay'){ realAct('idle'); }
   if(REAL.smile) REAL.smile.visible = REAL.cur==='cel' && REAL.smiling && !REAL.facePatch;
   REAL.mixer.update(dt);
@@ -1243,11 +1255,11 @@ function updateReal(dt){
 /* 換臉：把照片裁成羽化橢圓，貼成一片微彎的面片掛在頭骨上（照片只留在這台裝置） */
 let faceImgEl=null; const FACE_FWD=.195, FACE_UP=.115;   // 臉部面片相對頭骨的前移／上移量（實測對位）
 /* 進球笑臉：真人模型的臉是烤死的平靜表情，所以在嘴的位置貼一片畫出來的開口笑（露齒＋上揚嘴角），慶祝時隨機出現 */
-const SMILE_UP=.05, SMILE_W=.084, SMILE_H=.05, SMILE_RATE=.65;
+const SMILE_UP=.066, SMILE_W=.088, SMILE_H=.05, SMILE_RATE=.65;
 function applySmile(){
   if(!REAL.ready || REAL.smile) return;
   const c=document.createElement('canvas'); c.width=256; c.height=152; const x=c.getContext('2d');
-  const L=38, R=218, T=52, mouth=()=>{ x.beginPath(); x.moveTo(L,T); x.quadraticCurveTo(128,T+26,R,T); x.quadraticCurveTo(128,T+118,L,T); x.closePath(); };
+  const L=48, R=208, T=52, mouth=()=>{ x.beginPath(); x.moveTo(L,T); x.quadraticCurveTo(128,T+26,R,T); x.quadraticCurveTo(128,T+118,L,T); x.closePath(); };
   // 嘴周一圈柔和的膚色，蓋掉原本閉著的嘴
   const g=x.createRadialGradient(128,76,30,128,76,120); g.addColorStop(0,'rgba(196,140,112,.95)'); g.addColorStop(.6,'rgba(196,140,112,.7)'); g.addColorStop(1,'rgba(196,140,112,0)');
   x.save(); x.translate(128,76); x.scale(1,.6); x.translate(-128,-76); x.fillStyle=g; x.fillRect(-60,-80,376,312); x.restore();
@@ -1255,7 +1267,7 @@ function applySmile(){
   x.save(); mouth(); x.clip(); x.fillStyle='#f6f1e8'; x.beginPath(); x.moveTo(L,T-6); x.quadraticCurveTo(128,T+22,R,T-6); x.lineTo(R,T+22); x.quadraticCurveTo(128,T+58,L,T+22); x.closePath(); x.fill();
   x.strokeStyle='rgba(150,140,130,.5)'; x.lineWidth=1.5; for(let i=-3;i<=3;i++){ x.beginPath(); x.moveTo(128+i*21,T); x.lineTo(128+i*21,T+50); x.stroke(); }
   x.fillStyle='#b8575c'; x.beginPath(); x.ellipse(128,T+74,52,22,0,0,7); x.fill(); x.restore();
-  x.lineJoin='round'; x.lineCap='round'; x.strokeStyle='#9a4046'; x.lineWidth=11; mouth(); x.stroke();
+  x.lineJoin='round'; x.lineCap='round'; x.strokeStyle='#8a4548'; x.lineWidth=8; mouth(); x.stroke();
   // 嘴角上揚的小勾
   x.strokeStyle='rgba(120,70,58,.75)'; x.lineWidth=4; x.beginPath(); x.moveTo(L+2,T+4); x.quadraticCurveTo(L-12,T-2,L-14,T-14); x.stroke(); x.beginPath(); x.moveTo(R-2,T+4); x.quadraticCurveTo(R+12,T-2,R+14,T-14); x.stroke();
   const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4;
@@ -1526,6 +1538,7 @@ const ROUND = 3, ROUNDS = 3;   // 每輪踢 3 球，踢完直接進下一輪，�
 const DIFF = [ { react:1, reach:0, err:1, wind:1, stage:'小組賽', name:'門將反應慢・微風', move:0, wall:false },
                { react:.82, reach:.3, err:.8, wind:1.5, stage:'淘汰賽', name:'門將更快・風變大・黃金靶會移動', move:1, wall:false },
                { react:.68, reach:.6, err:.6, wind:2, stage:'冠軍戰', name:'最強門將・強風・人牆擋路', move:2, wall:true } ];
+const GRAND_STARS = 6;   // 總星數要達到幾顆才算大滿貫（滿分 9）
 const PASS = 1;   // 每關至少進幾球才能晉級下一關
 const starStr = n => '★'.repeat(n)+'<i>'+'★'.repeat(ROUND-n)+'</i>';
 const dif = () => DIFF[Math.min((G.round||1)-1, DIFF.length-1)];
@@ -1577,8 +1590,8 @@ function newShot(){
   if(G.mode==='play' && G.shot===0){ const d=dif(); setTimeout(()=>{ if(G.state==='aim') popup(d.wall?`${d.stage}・繞過人牆`:d.move?`${d.stage}・靶會移動`:d.stage,'gold'); },250); }
   if(G.mode==='play' && G.shot===ROUND-1){ setTimeout(()=>{ if(G.state==='aim') popup('決勝球・分數 ×2','gold'); },300); excite(.5,1.5); }
 }
-function setPlayUI(on){ if(TALLY.on) tallyEnd(); setTimeout(updateUlt,0); $('hud').hidden=!on; $('bottom').hidden=!on; $('title').hidden=on; $('locker').hidden=true; }
-function newRound(){ G.mode='play'; G.fever=false; G.round=1; G.allGoals=0; G.ultPow=ULT_GIFT; G.ultArmed=null; G.shot=0; G.results=[]; G.score=0; G.streak=0; G.over=false; G.near=null; G.stars=[]; G.failed=false; G.quit=false; G.stageScore=0; G.stageGoals=0; tallyEnd(); $('roundCard').hidden=true; $('end').hidden=true; $('tele').textContent=''; setPlayUI(true);
+function setPlayUI(on){ if(!on){ G.champ=false; setAura(false); } if(TALLY.on) tallyEnd(); setTimeout(updateUlt,0); $('hud').hidden=!on; $('bottom').hidden=!on; $('title').hidden=on; $('locker').hidden=true; }
+function newRound(){ G.mode='play'; G.fever=false; G.round=1; G.allGoals=0; G.ultPow=ULT_GIFT; G.ultArmed=null; G.shot=0; G.results=[]; G.score=0; G.streak=0; G.over=false; G.near=null; G.stars=[]; G.failed=false; G.quit=false; G.champ=false; setAura(false); G.stageScore=0; G.stageGoals=0; tallyEnd(); $('roundCard').hidden=true; $('end').hidden=true; $('tele').textContent=''; setPlayUI(true);
   $('hint').textContent='從球往上滑射門・射進黃色靶環加 150 分'; $('hint').hidden=false; newShot(); setTimeout(()=>sfx.whistle(false),300); }
 // 開場：鏡頭繞主角環場，主角原地熱身
 function showTitle(){
@@ -1874,13 +1887,30 @@ function strike(x,z,loud=1){ const b=BOLTS[boltCur=(boltCur+1)%BOLTS.length]; Ob
   noise(.07,.5*loud,5200,'highpass'); noise(.9,.42*loud,420,'lowpass',.04,1,90); tone(95,.7,'sine',.3*loud,38,.03); }
 function updateBolts(dt){ for(const b of BOLTS){ if(!b.core.visible) continue; b.t+=dt; if(!b.re && b.t>.09){ b.re=true; boltShape(b); }
     const on=b.t<b.life, f=on ? (Math.random()<.25?.25:1) : 0; b.core.material.opacity=f; b.glow.material.opacity=.45*f; if(!on) b.core.visible=b.glow.visible=false; } }
-function titleCard(cap,big,sub,gold){ const c=$('cutin'); $('ciCap').textContent=cap; $('ciSub').textContent=sub; $('ciBig').innerHTML=[...big].map(ch=>`<span>${ch}</span>`).join('');
-  c.classList.toggle('gold',!!gold); c.classList.remove('on'); void c.offsetWidth; c.classList.add('on'); fitCard(); }
+/* 大滿貫金光：選手身後一圈大光暈、腳下光環、一道沖天光柱、身上往上飄的金粉，衣服和皮膚也泛金光（材質自發光）。達成大滿貫時開，重新開始或離開時關 */
+const AURA = { on:false, t:0, halo:new THREE.Sprite(new THREE.SpriteMaterial({ map:glowTex, color:0xffc83a, blending:THREE.AdditiveBlending, depthWrite:false, fog:false, transparent:true, opacity:0 })),
+  ring:new THREE.Mesh(new THREE.RingGeometry(.55,1.25,48), new THREE.MeshBasicMaterial({ color:0xffd75a, transparent:true, opacity:0, side:THREE.DoubleSide, blending:THREE.AdditiveBlending, depthWrite:false, toneMapped:false })),
+  beam:new THREE.Mesh(new THREE.CylinderGeometry(.75,.95,9,24,1,true), new THREE.MeshBasicMaterial({ color:0xffcf4a, transparent:true, opacity:0, side:THREE.DoubleSide, blending:THREE.AdditiveBlending, depthWrite:false, fog:false, toneMapped:false })), mats:null };
+AURA.ring.rotation.x=-Math.PI/2; [AURA.halo,AURA.ring,AURA.beam].forEach(o=>{ o.visible=false; o.frustumCulled=false; scene.add(o); });
+function auraMats(){ const set=new Set(); [hero, REAL.inner].forEach(r=>r && r.traverse(o=>{ if(o.isMesh && o.material && o.material.emissive) set.add(o.material); })); return [...set]; }
+function setAura(on){ if(AURA.on===on) return; AURA.on=on; AURA.t=0; [AURA.halo,AURA.ring,AURA.beam].forEach(o=>o.visible=on);
+  if(on){ AURA.mats=auraMats().map(m=>({ m, c:m.emissive.getHex(), i:m.emissiveIntensity })); burst(_tp1.copy(hero.position).setY(1.1),160,[0xffd21f,0xfff3b0,0xffffff],8,.4,1.1,0); }
+  else if(AURA.mats){ AURA.mats.forEach(({m,c,i})=>{ m.emissive.setHex(c); m.emissiveIntensity=i; }); AURA.mats=null; } }
+function updateAura(dt){ if(!AURA.on) return; AURA.t+=dt; const k=Math.min(1,AURA.t/.6), p=.5+.5*Math.sin(T*5), hp=hero.position, y0=(KIT.avatar==='real'&&REAL.ready?REAL.g.position.y:0);
+  AURA.halo.position.set(hp.x,1.25+y0,hp.z); AURA.halo.scale.setScalar((5.2+p*.9)*k); AURA.halo.material.opacity=(.5+.18*p)*k;
+  AURA.ring.position.set(hp.x,.03,hp.z); AURA.ring.scale.setScalar((1+((T*.9)%1)*1.6)); AURA.ring.material.opacity=(1-((T*.9)%1))*.75*k;
+  AURA.beam.position.set(hp.x,4.5,hp.z); AURA.beam.material.opacity=(.07+.04*p)*k; AURA.beam.rotation.y=T*.6;
+  AURA.mats.forEach(({m})=>{ m.emissive.setHex(0xffa81e); m.emissiveIntensity=(.28+.2*p)*k; });
+  for(let i=0;i<3;i++){ const a=Math.random()*6.283, r=rnd(.25,.75); emit(_tp1.set(hp.x+Math.cos(a)*r,rnd(.1,1.9)+y0,hp.z+Math.sin(a)*r),rnd(-.15,.15),rnd(1.2,2.6),rnd(-.15,.15),Math.random()<.3?0xffffff:0xffd21f,rnd(.14,.3),rnd(.7,1.3),-.6,.6); } }
+function titleCard(cap,big,sub,gold,slam){ const c=$('cutin'); c.classList.toggle('slam',!!slam); $('ciCap').textContent=cap; $('ciSub').textContent=sub; $('ciBig').innerHTML=[...big].map(ch=>`<span>${ch}</span>`).join('');
+  c.classList.toggle('gold',!!gold); c.classList.remove('on'); void c.offsetWidth; c.classList.add('on'); fitCard();
+  if(slam) [...big].forEach((_,i)=>setTimeout(()=>{ if(!c.classList.contains('slam')) return; goalImpactFlash(); if(!REDUCED) shake=Math.max(shake,.75); tone(58-i*4,.6,'sine',.75,30); noise(.22,.45,1400-i*200); tone(392*Math.pow(2,[0,4,7,12][i%4]/12),.5,'triangle',.2);
+      burst(_tp1.copy(hero.position).setY(1.3),36,[0xffd21f,0xfff3b0],11,.22,.6,0); try{ navigator.vibrate?.(60); }catch(_){} }, 250+i*500+ (REDUCED?0:230))); }
 /* 字卡自動縮放：手機如果開了「放大字體」（系統或瀏覽器的文字縮放），用 vw 算的字級也會被再放大，大字就會超出螢幕。
    所以每次顯示時實際量一次寬度，超過可用寬度就整行等比縮小（transform 不受文字縮放影響） */
 function fitCard(){ const W=Math.min(innerWidth,document.documentElement.clientWidth||innerWidth)-40;
   for(const [el,kids] of [[$('ciBig'),true],[$('ciSub'),false],[$('ciCap').parentElement,false]]){ el.style.transform=''; el.style.scale=''; el.style.transformOrigin='50% 50%';
-    const w = Math.max(el.offsetWidth, el.scrollWidth); if(w<=W) continue; const k=(W/w).toFixed(3);
+    const w = el.offsetWidth; /* 只看排版寬度；scrollWidth 會把子元素動畫中的放大也算進去，量出來會過大 */ if(w<=W) continue; const k=(W/w).toFixed(3);
     if(window.CSS && CSS.supports && CSS.supports('scale','1')) el.style.scale=k; else el.style.transform=`scale(${k})`; } }   // 用獨立的 scale 屬性，才不會被進場動畫的 transform 蓋掉
 addEventListener('resize',()=>{ if($('cutin').classList.contains('on')) fitCard(); });
 function goalImpactFlash(){ const b=$('boom'); b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); }
@@ -1916,11 +1946,13 @@ function endRound(){
   if(G.score>best){ best=G.score; try{ localStorage.setItem('pk_best',best); }catch(_){} }
   $('endScore').textContent=G.score; $('endGoals').textContent=`${ROUNDS} 關 ${ROUND*ROUNDS} 球進 ${goals} 球・${st} 顆星`; $('endBest').textContent=`這台裝置最高紀錄 ${best} 分・最多 ${bestStars} 顆星`;
   $('endNear').textContent = G.near ? `最可惜的一球：第 ${G.near.shot} 球，${G.near.msg}` : '';
-  // 打完三關且冠軍戰有進球＝大滿貫：金色字卡＋加碼煙火，結算卡片晚一點出現
-  const champ = !G.quit && (G.round||1)>=ROUNDS && G.results.some(Boolean);
-  $('endTitle').textContent = champ ? '大滿貫達成！' : G.quit ? '全場結束' : '止步'+dif().stage; $('end').classList.toggle('champ',champ);
-  if(champ){ titleCard('世界盃','大滿貫','GRAND SLAM',true); fireworkShow(3); confettiBurst(new THREE.Vector3(0,4,-4),300,10); jubilate(); [0,4,7,12,16,19].forEach((k,i)=>tone(392*Math.pow(2,k/12),.6,'triangle',.16,null,i*.1)); }
-  setTimeout(()=>{ if(G.over) $('end').hidden=false; }, champ&&!REDUCED?1500:0); updateHUD();
+  // 大滿貫：打完三關而且總星數達到 GRAND_STARS（九顆裡拿六顆以上）才算。金色字卡＋加碼煙火，結算卡片晚一點出現
+  const done = !G.quit && (G.round||1)>=ROUNDS, champ = done && st>=GRAND_STARS && G.results.some(Boolean);   // 冠軍戰也要至少進一球，和前兩關的晉級條件一致
+  $('endTitle').textContent = champ ? '大滿貫達成！' : G.quit ? '全場結束' : !G.results.some(Boolean) ? '止步'+dif().stage : '完賽';
+  $('end').classList.toggle('champ',champ); G.champ=champ; if(champ){ heroVis=true; setAura(true); }
+  if(done && !champ) $('endGoals').textContent += st>=GRAND_STARS ? '・冠軍戰進一球就是大滿貫' : `・再 ${GRAND_STARS-st} 顆星就是大滿貫`;
+  if(champ){ setTimeout(()=>{ if(G.over && G.champ) titleCard('世界盃','大滿貫','GRAND SLAM',true,true); }, REDUCED?0:900); fireworkShow(3); confettiBurst(new THREE.Vector3(0,4,-4),300,10); jubilate(); [0,4,7,12,16,19].forEach((k,i)=>tone(392*Math.pow(2,k/12),.6,'triangle',.16,null,i*.1)); }
+  setTimeout(()=>{ if(G.over) $('end').hidden=false; }, champ&&!REDUCED?4600:0); updateHUD();   // 大滿貫：先讓發金光的選手獨佔畫面約三秒，結算卡片才上來
   // 結算：進 3 球以上整場放煙火
   sfx.whistle(true);
   if(goals>=4){ hype=1; excite(1,4); fireworkShow(goals>=7 ? 3 : 2); confettiBurst(new THREE.Vector3(0,3,-8),200,8); }
@@ -2156,7 +2188,7 @@ function frame(rawDt, draw=true){
     u.ring.rotation.z=T*2; u.glow.material.opacity=0.16+Math.sin(T*5+i)*0.08;
     if(u.amp && !u.hit) tg.position.x=Math.max(-GOAL_W/2+0.62,Math.min(GOAL_W/2-0.62,u.bx+Math.sin(T*u.sp+u.ph)*u.amp));
     if(u.hit>0){ u.hit+=dt*(RP.on?.45:1); tg.scale.setScalar((u.big||1)+u.hit*4); u.ring.material.opacity=Math.max(0,1-u.hit*2); if(u.hit>0.5) tg.visible=false; } }
-  updateBolts(dt);
+  updateBolts(dt); updateAura(dt);
   if(METEOR.a>0 && G.state==='result'){ setBeam(METEOR.end, Math.max(0,METEOR.a-dt*.45)); if(Math.random()<.6){ _tp1.lerpVectors(METEOR.p0,METEOR.end,Math.random()); emit(_tp1,rnd(-.6,.6),rnd(-.6,.6),rnd(-.6,.6),Math.random()<.5?0xffd21f:0xbfe6ff,rnd(.25,.45),rnd(.4,.8),0,1); } }
   if(shock.visible){ const u=(shock.userData.t+=dt)/0.55; shock.scale.setScalar((0.4+u*5.5)*shock.userData.k); shock.material.opacity=Math.max(0,1-u)*.9; if(u>=1) shock.visible=false; }
   if(WALL.on && WALL.blown){ WALL.t+=dt; const u=Math.min(1,WALL.t/.5); WALL.figs.forEach((f,i)=>{ f.rotation.x=-1.5*u; f.rotation.z=(i-1)*.7*u; f.position.x=WALL.x+(i-1)*(0.64+1.3*u); f.position.z=WALL.z-1.2*u; f.position.y=Math.sin(u*Math.PI)*.5; }); }
@@ -2204,9 +2236,10 @@ function frame(rawDt, draw=true){
     const a=T*(REDUCED?0.08:0.3), R=narrow?4.4:4.6;
     camPos.set(Math.sin(a)*R, 1.7, 1.2+Math.cos(a)*R); camTarget.set(0,-0.75,1.2);
   } else if(G.over){
-    // 結算：拉遠繞整座球場
+    // 結算：拉遠繞整座球場；大滿貫改成低角度繞著發金光的選手，卡片出來後選手留在畫面上半部
     const a=T*(REDUCED?0.05:0.15);
-    camPos.set(Math.sin(a)*17, 9, -7+Math.cos(a)*14); camTarget.set(0,3.5,GOAL_Z+7);
+    if(G.champ){ const hp=hero.position, b=T*(REDUCED?.1:.35), up=$('end').hidden?0:1; camPos.set(hp.x+Math.sin(b)*5.2, 0.9, hp.z-Math.cos(b)*5.2); camTarget.set(hp.x, 1.9-up*2.4, hp.z); }
+    else { camPos.set(Math.sin(a)*17, 9, -7+Math.cos(a)*14); camTarget.set(0,3.5,GOAL_Z+7); }
   } else if(G.state==='flight' || G.state==='result'){
     const cx=clamp(B.p.x,-5,5); camPos.set(cx*0.45,1.7+Math.min(B.p.y,3)*0.2,Math.max(B.p.z+4.6,GOAL_Z+5.5)); camTarget.set(cx*0.7,Math.max(1,B.p.y*0.8),Math.min(B.p.z-6,GOAL_Z));
     // 流星天降：先仰頭看球衝上天，再退到球場中段、同時看得到夜空和球門，等流星砸下來
@@ -2241,7 +2274,7 @@ function loop(){ requestAnimationFrame(loop); const raw=clock.getDelta(); adapt(
 const DEBUG=new URLSearchParams(location.search).has('debug');
 if(DEBUG){
   showTitle(); frame(1/60);
-  window.SL={ titleCard, THREE, scene, renderer, WALL, targets, ULT, GHOSTS, strike, BOLTS, METEOR, openUltMenu, launch, G, B, K, RP, Q, TUNE, hero, keeper, camera, finishShot, updateUlt, REAL, KIT, setAvatar, showLocker, newRound, startDemo, showTitle, tryShoot, startReplay,
+  window.SL={ titleCard, AURA, setAura, THREE, scene, renderer, WALL, targets, ULT, GHOSTS, strike, BOLTS, METEOR, openUltMenu, launch, G, B, K, RP, Q, TUNE, hero, keeper, camera, finishShot, updateUlt, REAL, KIT, setAvatar, showLocker, newRound, startDemo, showTitle, tryShoot, startReplay,
     step:(n=60,dt=1/60)=>{ for(let i=0;i<n;i++) frame(dt,i===n-1); return G.state; },
     swipe:(dx=0,len=0.45,bulge=0,ms=180)=>{ const W=innerWidth,H=innerHeight, x0=W/2, y0=H*.82, p=[]; for(let i=0;i<=12;i++){ const u=i/12;
         p.push({ x:x0+dx*W*u+bulge*W*Math.sin(Math.PI*u), y:y0-len*H*u, t:u*ms }); } tryShoot(p); return B.pending; },
